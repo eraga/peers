@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007-2013 Yohann Martineau 
+
+    Copyright 2007-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.media;
@@ -54,17 +54,17 @@ public class CaptureRtpSender {
         try {
             rawDataInput = new PipedInputStream(rawDataOutput, PIPE_SIZE);
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
             return;
         }
-        
+
         PipedOutputStream encodedDataOutput = new PipedOutputStream();
         PipedInputStream encodedDataInput;
         try {
             encodedDataInput = new PipedInputStream(encodedDataOutput,
                     PIPE_SIZE);
         } catch (IOException e) {
-            logger.error("input/output error");
+            logger.error("input/output onError");
             rawDataInput.close();
             return;
         }
@@ -88,22 +88,22 @@ public class CaptureRtpSender {
     }
 
     public void start() throws IOException {
-        
+
         capture.setStopped(false);
         encoder.setStopped(false);
         rtpSender.setStopped(false);
-        
+
         Thread captureThread = new Thread(capture,
                 Capture.class.getSimpleName());
         Thread encoderThread = new Thread(encoder,
                 Encoder.class.getSimpleName());
         Thread rtpSenderThread = new Thread(rtpSender,
                 RtpSender.class.getSimpleName());
-        
+
         captureThread.start();
         encoderThread.start();
         rtpSenderThread.start();
-        
+
     }
 
     public void stop() {

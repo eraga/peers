@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010-2013 Yohann Martineau 
+
+    Copyright 2010-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.rtp;
@@ -42,7 +42,7 @@ import net.sourceforge.peers.Logger;
 import net.sourceforge.peers.media.AbstractSoundManager;
 
 /**
- * can be instantiated on UAC INVITE sending or on UAS 200 OK sending 
+ * can be instantiated on UAC INVITE sending or on UAS 200 OK sending
  */
 public class RtpSession {
 
@@ -99,6 +99,9 @@ public class RtpSession {
                 }
             }
         );
+        for (RtpListener rtpListener: rtpListeners) {
+            rtpListener.onRtpSessionEnd();
+        }
     }
 
     public void addRtpListener(RtpListener rtpListener) {
@@ -113,7 +116,7 @@ public class RtpSession {
         final DatagramPacket datagramPacket =
                 new DatagramPacket(buf, buf.length,
                 remoteAddress, remotePort);
-        
+
         if (!datagramSocket.isClosed()) {
             // AccessController.doPrivileged added for plugin compatibility
             AccessController.doPrivileged(

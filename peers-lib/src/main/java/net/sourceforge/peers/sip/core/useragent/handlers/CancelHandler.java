@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent.handlers;
@@ -82,41 +82,41 @@ public class CancelHandler extends DialogMethodHandler
         if (cancelResponse.getStatusCode() != RFC3261.CODE_200_OK) {
             return;
         }
-        
+
         SipResponse lastResponse = inviteServerTransaction.getLastResponse();
         if (lastResponse != null &&
                 lastResponse.getStatusCode() >= RFC3261.CODE_200_OK) {
             return;
         }
-        
+
         SipResponse inviteResponse = buildGenericResponse(
                 inviteServerTransaction.getRequest(),
                 RFC3261.CODE_487_REQUEST_TERMINATED,
                 RFC3261.REASON_487_REQUEST_TERMINATED);
         inviteServerTransaction.sendReponse(inviteResponse);
-        
+
         Dialog dialog = dialogManager.getDialog(lastResponse);
         dialog.receivedOrSent300To699();
 
         SipListener sipListener = userAgent.getSipListener();
         if (sipListener != null) {
-            sipListener.remoteHangup(sipRequest);
+            sipListener.onRemoteHangup(sipRequest);
         }
     }
-    
+
     //////////////////////////////////////////////////////////
     // UAC methods
     //////////////////////////////////////////////////////////
-    
+
     public ClientTransaction preProcessCancel(SipRequest cancelGenericRequest,
             SipRequest inviteRequest,
             MidDialogRequestManager midDialogRequestManager) {
         //TODO
         //p. 54 §9.1
-        
+
         SipHeaders cancelHeaders = cancelGenericRequest.getSipHeaders();
         SipHeaders inviteHeaders = inviteRequest.getSipHeaders();
-        
+
         //cseq
         SipHeaderFieldName cseqName = new SipHeaderFieldName(RFC3261.HDR_CSEQ);
         SipHeaderFieldValue cancelCseq = cancelHeaders.get(cseqName);
@@ -124,7 +124,7 @@ public class CancelHandler extends DialogMethodHandler
         cancelCseq.setValue(inviteCseq.getValue().replace(RFC3261.METHOD_INVITE,
                 RFC3261.METHOD_CANCEL));
 
-        
+
         //from
         SipHeaderFieldName fromName = new SipHeaderFieldName(RFC3261.HDR_FROM);
         SipHeaderFieldValue cancelFrom = cancelHeaders.get(fromName);
@@ -133,13 +133,13 @@ public class CancelHandler extends DialogMethodHandler
         SipHeaderParamName tagParam = new SipHeaderParamName(RFC3261.PARAM_TAG);
         cancelFrom.removeParam(tagParam);
         cancelFrom.addParam(tagParam, inviteFrom.getParam(tagParam));
-        
+
         //top-via
 //        cancelHeaders.add(new SipHeaderFieldName(RFC3261.HDR_VIA),
 //                Utils.getInstance().getTopVia(inviteRequest));
         SipHeaderFieldValue topVia = Utils.getTopVia(inviteRequest);
         String branchId = topVia.getParam(new SipHeaderParamName(RFC3261.PARAM_BRANCH));
-        
+
         //route
         SipHeaderFieldName routeName = new SipHeaderFieldName(RFC3261.HDR_ROUTE);
         SipHeaderFieldValue inviteRoute = inviteHeaders.get(routeName);
@@ -167,6 +167,6 @@ public class CancelHandler extends DialogMethodHandler
 
     public void transactionFailure() {
         // TODO Auto-generated method stub
-        
+
     }
 }

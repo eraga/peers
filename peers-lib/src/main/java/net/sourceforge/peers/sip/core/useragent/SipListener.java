@@ -13,32 +13,72 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 
 package net.sourceforge.peers.sip.core.useragent;
 
+import net.sourceforge.peers.sdp.Codec;
 import net.sourceforge.peers.sip.transport.SipRequest;
 import net.sourceforge.peers.sip.transport.SipResponse;
 
 public interface SipListener {
 
-    public void registering(SipRequest sipRequest);
+    void onRegistering(SipRequest sipRequest);
 
-    public void registerSuccessful(SipResponse sipResponse);
+    void onRegisterSuccessful(SipResponse sipResponse);
 
-    public void registerFailed(SipResponse sipResponse);
+    void onRegisterFailed(SipResponse sipResponse);
 
-    public void incomingCall(SipRequest sipRequest, SipResponse provResponse);
+    void onIncomingCall(SipRequest sipRequest, SipResponse provResponse);
 
-    public void remoteHangup(SipRequest sipRequest);
+//    /**
+//     * When an incoming call is cancelled
+//     */
+//    void onCallCancelled(UserAgent ua);
+//
+//    /**
+//     * When an ougoing call has been accepted
+//     */
+//    void onCallAccepted(UserAgent ua);
+//
+//    /**
+//     * When an ougoing call is stated to be in progress
+//     */
+//    void onCallProgress(UserAgent ua);
+//
+//    /**
+//     * When an ougoing call is remotly onRinging
+//     */
+//    void onCallRinging(UserAgent ua);
+//
+//
+//    /**
+//     * When an ougoing call has been refused or timeout
+//     */
+//    void onCallFailed(UserAgent ua, String reason);
 
-    public void ringing(SipResponse sipResponse);
 
-    public void calleePickup(SipResponse sipResponse);
+    void onRemoteHangup(SipRequest sipRequest);
 
-    public void error(SipResponse sipResponse);
+    void onRinging(SipResponse sipResponse);
+
+    void onCalleePickup(SipResponse sipResponse);
+
+    void onError(SipResponse sipResponse);
+
+
+    /**
+     * When a new media session is started
+     */
+    void onMediaSessionStarted(UserAgent ua, Codec codec);
+
+    /**
+     * When a media session is stopped
+     */
+    void onMediaSessionStopped(UserAgent ua);
+
 
 }

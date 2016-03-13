@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.transaction;
@@ -37,21 +37,21 @@ public class NonInviteServerTransaction extends NonInviteTransaction
     public final NonInviteServerTransactionState PROCEEDING;
     public final NonInviteServerTransactionState COMPLETED;
     public final NonInviteServerTransactionState TERMINATED;
-    
+
     protected ServerTransactionUser serverTransactionUser;
     protected Timer timer;
     protected String transport;
-    
+
     private NonInviteServerTransactionState state;
     //private int port;
-    
+
     NonInviteServerTransaction(String branchId, int port, String transport,
             String method, ServerTransactionUser serverTransactionUser,
             SipRequest sipRequest, Timer timer, TransportManager transportManager,
             TransactionManager transactionManager, Logger logger) {
         super(branchId, method, timer, transportManager, transactionManager,
                 logger);
-        
+
         TRYING = new NonInviteServerTransactionStateTrying(getId(), this,
                 logger);
         state = TRYING;
@@ -61,7 +61,7 @@ public class NonInviteServerTransaction extends NonInviteTransaction
                 logger);
         TERMINATED = new NonInviteServerTransactionStateTerminated(getId(),
                 this, logger);
-        
+
         //this.port = port;
         this.transport = transport;
         this.serverTransactionUser = serverTransactionUser;
@@ -71,9 +71,9 @@ public class NonInviteServerTransaction extends NonInviteTransaction
         try {
             transportManager.createServerTransport(transport, port);
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
         }
-        
+
         //TODO pass request to TU
     }
 
@@ -81,7 +81,7 @@ public class NonInviteServerTransaction extends NonInviteTransaction
         this.state.log(state);
         this.state = state;
     }
-    
+
     public void receivedRequest(SipRequest sipRequest) {
         state.receivedRequest();
     }
@@ -95,7 +95,7 @@ public class NonInviteServerTransaction extends NonInviteTransaction
             state.received200To699();
         }
     }
-    
+
     void sendLastResponse() {
         //sipServerTransport.sendResponse(responses.get(responses.size() - 1));
         int nbOfResponses = responses.size();
@@ -103,19 +103,19 @@ public class NonInviteServerTransaction extends NonInviteTransaction
             try {
                 transportManager.sendResponse(responses.get(nbOfResponses - 1));
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
             }
         }
     }
-    
+
     public void start() {
         // TODO Auto-generated method stub
-        
+
     }
 
 //    public void messageReceived(SipMessage sipMessage) {
 //        // TODO Auto-generated method stub
-//        
+//
 //    }
 
     class TimerJ extends TimerTask {
@@ -124,5 +124,5 @@ public class NonInviteServerTransaction extends NonInviteTransaction
             state.timerJFires();
         }
     }
-    
+
 }

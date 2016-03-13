@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007-2013 Yohann Martineau 
+
+    Copyright 2007-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent.handlers;
@@ -50,25 +50,25 @@ public class ByeHandler extends DialogMethodHandler
     ////////////////////////////////////////////////
     // methods for UAC
     ////////////////////////////////////////////////
-    
+
     public void preprocessBye(SipRequest sipRequest, Dialog dialog) {
 
         // 15.1.1
-        
+
         String addrSpec = sipRequest.getRequestUri().toString();
         userAgent.getPeers().remove(addrSpec);
         challengeManager.postProcess(sipRequest);
     }
-    
-    
 
-    
-    
-    
+
+
+
+
+
     ////////////////////////////////////////////////
     // methods for UAS
     ////////////////////////////////////////////////
-    
+
     public void handleBye(SipRequest sipRequest, Dialog dialog) {
         dialog.receivedOrSentBye();
         //String remoteUri = dialog.getRemoteUri();
@@ -78,14 +78,14 @@ public class ByeHandler extends DialogMethodHandler
         dialogManager.removeDialog(dialog.getId());
         logger.debug("removed dialog " + dialog.getId());
         userAgent.getMediaManager().stopSession();
-        
+
         SipResponse sipResponse =
             RequestManager.generateResponse(
                     sipRequest,
                     dialog,
                     RFC3261.CODE_200_OK,
                     RFC3261.REASON_200_OK);
-        
+
         // TODO determine port and transport for server transaction>transport
         // from initial invite
         // FIXME determine port and transport for server transaction>transport
@@ -96,18 +96,18 @@ public class ByeHandler extends DialogMethodHandler
                     RFC3261.TRANSPORT_UDP,
                     this,
                     sipRequest);
-        
+
         serverTransaction.start();
-        
+
         serverTransaction.receivedRequest(sipRequest);
-        
+
         serverTransaction.sendReponse(sipResponse);
-        
+
         dialogManager.removeDialog(dialog.getId());
 
         SipListener sipListener = userAgent.getSipListener();
         if (sipListener != null) {
-            sipListener.remoteHangup(sipRequest);
+            sipListener.onRemoteHangup(sipRequest);
         }
 
 //        setChanged();
@@ -119,7 +119,7 @@ public class ByeHandler extends DialogMethodHandler
     ///////////////////////////////////////
     public void transactionFailure() {
         // TODO Auto-generated method stub
-        
+
     }
 
     ///////////////////////////////////////
@@ -128,14 +128,14 @@ public class ByeHandler extends DialogMethodHandler
 	@Override
 	public void transactionTimeout(ClientTransaction clientTransaction) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void provResponseReceived(SipResponse sipResponse,
 			Transaction transaction) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -174,10 +174,10 @@ public class ByeHandler extends DialogMethodHandler
 	@Override
 	public void transactionTransportError() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
-    
-    
+
+
 }

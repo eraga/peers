@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent;
@@ -54,7 +54,7 @@ public abstract class RequestManager {
                 destinationUri = new SipURI(
                         NameAddress.nameAddressToUri(route.toString()));
             } catch (SipUriSyntaxException e) {
-                logger.error("syntax error", e);
+                logger.error("syntax onError", e);
             }
         }
         if (destinationUri == null) {
@@ -96,12 +96,12 @@ public abstract class RequestManager {
     protected ByeHandler byeHandler;
     protected OptionsHandler optionsHandler;
     protected RegisterHandler registerHandler;
-    
+
     protected UserAgent userAgent;
     protected TransactionManager transactionManager;
     protected TransportManager transportManager;
     protected Logger logger;
-    
+
     public RequestManager(UserAgent userAgent,
             InviteHandler inviteHandler,
             CancelHandler cancelHandler,

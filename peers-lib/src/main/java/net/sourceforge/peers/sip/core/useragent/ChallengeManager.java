@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2008-2013 Yohann Martineau 
+
+    Copyright 2008-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent;
@@ -43,7 +43,7 @@ import net.sourceforge.peers.sip.transport.SipResponse;
 public class ChallengeManager implements MessageInterceptor {
 
     public static final String ALGORITHM_MD5 = "MD5";
-    
+
     private String username;
     private String password;
     private String realm;
@@ -54,7 +54,7 @@ public class ChallengeManager implements MessageInterceptor {
     private String profileUri;
     private String qop;
     private String cnonce;
-    
+
     private static volatile int nonceCount = 1;
     private String nonceCountHex;
 
@@ -65,11 +65,11 @@ public class ChallengeManager implements MessageInterceptor {
     //       and another challenge is received in the mean time for an invite?
     private int statusCode;
     private SipHeaderFieldValue contact;
-    
+
     private InitialRequestManager initialRequestManager;
     private MidDialogRequestManager midDialogRequestManager;
     private DialogManager dialogManager;
-    
+
     public ChallengeManager(Config config,
             InitialRequestManager initialRequestManager,
             MidDialogRequestManager midDialogRequestManager,
@@ -110,7 +110,7 @@ public class ChallengeManager implements MessageInterceptor {
 
     public void handleChallenge(SipRequest sipRequest,
             SipResponse sipResponse) {
-        init();        
+        init();
         statusCode = sipResponse.getStatusCode();
         SipHeaders responseHeaders = sipResponse.getSipHeaders();
         SipHeaders requestHeaders = sipRequest.getSipHeaders();
@@ -141,7 +141,7 @@ public class ChallengeManager implements MessageInterceptor {
         nonce = getParameter(RFC2617.PARAM_NONCE, headerValue);
         opaque = getParameter(RFC2617.PARAM_OPAQUE, headerValue);
         qop = getParameter(RFC2617.PARAM_QOP, headerValue);
-        if( "auth".equals(qop)) {      
+        if( "auth".equals(qop)) {
             nonceCountHex = String.format("%08X", nonceCount++);
         }
         String method = sipRequest.getMethod();
@@ -166,11 +166,11 @@ public class ChallengeManager implements MessageInterceptor {
                 initialRequestManager.createInitialRequest(
                         requestUri, method, profileUri, callId, fromTag, this);
             } catch (SipUriSyntaxException e) {
-                logger.error("syntax error", e);
+                logger.error("syntax onError", e);
             }
         }
     }
-    
+
     private String getRequestDigest(String method) {
         StringBuffer buf = new StringBuffer();
         buf.append(username);
@@ -189,7 +189,7 @@ public class ChallengeManager implements MessageInterceptor {
         buf.append(RFC2617.DIGEST_SEPARATOR);
         buf.append(nonce);
         buf.append(RFC2617.DIGEST_SEPARATOR);
-        if("auth".equals(qop)) {      
+        if("auth".equals(qop)) {
             buf.append(nonceCountHex);
             buf.append(RFC2617.DIGEST_SEPARATOR);
             buf.append(cnonce);
@@ -200,7 +200,7 @@ public class ChallengeManager implements MessageInterceptor {
         buf.append(ha2);
         return md5hash(buf.toString());
     }
-    
+
     private String getParameter(String paramName, String header) {
         int paramPos = header.indexOf(paramName);
         if (paramPos < 0) {
@@ -287,7 +287,7 @@ public class ChallengeManager implements MessageInterceptor {
             }
         }
     }
-    
+
     private void appendParameter(StringBuffer buf, String name, String value) {
         buf.append(name);
         buf.append(RFC2617.PARAM_VALUE_SEPARATOR);
@@ -295,5 +295,5 @@ public class ChallengeManager implements MessageInterceptor {
         buf.append(value);
         buf.append(RFC2617.PARAM_VALUE_DELIMITER);
     }
-    
+
     }

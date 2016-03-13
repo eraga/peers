@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2008, 2009, 2010, 2011 Yohann Martineau 
+
+    Copyright 2008, 2009, 2010, 2011 Yohann Martineau
 */
 
 package net.sourceforge.peers.media;
@@ -33,7 +33,7 @@ import net.sourceforge.peers.Logger;
 
 
 public abstract class Encoder implements Runnable {
-    
+
     private PipedInputStream rawData;
     private PipedOutputStream encodedData;
     private boolean isStopped;
@@ -55,7 +55,7 @@ public abstract class Encoder implements Runnable {
         this.latch = latch;
         isStopped = false;
     }
-    
+
     public void run() {
         byte[] buffer;
         if (mediaDebug) {
@@ -99,10 +99,10 @@ public abstract class Encoder implements Runnable {
                     }
                 }
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
-            
+
             byte[] ulawData = process(buffer);
             if (mediaDebug) {
                 try {
@@ -116,7 +116,7 @@ public abstract class Encoder implements Runnable {
                 encodedData.write(ulawData);
                 encodedData.flush();
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
         }

@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent;
@@ -53,6 +53,7 @@ import net.sourceforge.peers.sip.transport.TransportManager;
 
 public class UserAgent {
 
+
     public final static String CONFIG_FILE = "conf" + File.separator + "peers.xml";
     public final static int RTP_DEFAULT_PORT = 8000;
 
@@ -62,22 +63,23 @@ public class UserAgent {
 
     private List<String> peers;
     //private List<Dialog> dialogs;
-    
+
     //TODO factorize echo and captureRtpSender
     private Echo echo;
-    
+
     private UAC uac;
     private UAS uas;
 
     private ChallengeManager challengeManager;
-    
+
     private DialogManager dialogManager;
     private TransactionManager transactionManager;
     private TransportManager transportManager;
 
     private int cseqCounter;
+
     private SipListener sipListener;
-    
+
     private SDPManager sdpManager;
     private AbstractSoundManager soundManager;
     private MediaManager mediaManager;
@@ -113,7 +115,7 @@ public class UserAgent {
         this.config = config;
 
         cseqCounter = 1;
-        
+
         StringBuffer buf = new StringBuffer();
         buf.append("starting user agent [");
         buf.append("myAddress: ");
@@ -127,22 +129,22 @@ public class UserAgent {
         logger.info(buf.toString());
 
         //transaction user
-        
+
         dialogManager = new DialogManager(logger);
-        
+
         //transaction
-        
+
         transactionManager = new TransactionManager(logger);
-        
+
         //transport
-        
+
         transportManager = new TransportManager(transactionManager,
                 config, logger);
-        
+
         transactionManager.setTransportManager(transportManager);
-        
+
         //core
-        
+
         InviteHandler inviteHandler = new InviteHandler(this,
                 dialogManager,
                 transactionManager,
@@ -166,7 +168,7 @@ public class UserAgent {
                 transactionManager,
                 transportManager,
                 logger);
-        
+
         InitialRequestManager initialRequestManager =
             new InitialRequestManager(
                 this,
@@ -191,7 +193,7 @@ public class UserAgent {
                 transactionManager,
                 transportManager,
                 logger);
-        
+
         uas = new UAS(this,
                 initialRequestManager,
                 midDialogRequestManager,
@@ -227,14 +229,14 @@ public class UserAgent {
         this.soundManager = soundManager;
         mediaManager = new MediaManager(this, logger);
     }
-    
+
     // client methods
 
     public void close() {
         transportManager.closeTransports();
         config.setPublicInetAddress(null);
     }
-    
+
     public SipRequest register() throws SipUriSyntaxException {
         return uac.register();
     }
@@ -242,27 +244,27 @@ public class UserAgent {
     public void unregister() throws SipUriSyntaxException {
         uac.unregister();
     }
-    
+
     public SipRequest invite(String requestUri, String callId)
             throws SipUriSyntaxException {
         return uac.invite(requestUri, callId);
     }
-    
+
     public void terminate(SipRequest sipRequest) {
         uac.terminate(sipRequest);
     }
-    
+
     public void acceptCall(SipRequest sipRequest, Dialog dialog) {
         uas.acceptCall(sipRequest, dialog);
     }
-    
+
     public void rejectCall(SipRequest sipRequest) {
         uas.rejectCall(sipRequest);
     }
-    
-    
+
+
     /**
-     * Gives the sipMessage if sipMessage is a SipRequest or 
+     * Gives the sipMessage if sipMessage is a SipRequest or
      * the SipRequest corresponding to the SipResponse
      * if sipMessage is a SipResponse
      * @param sipMessage
@@ -287,7 +289,7 @@ public class UserAgent {
             return null;
         }
     }
-    
+
 //    public List<Dialog> getDialogs() {
 //        return dialogs;
 //    }
@@ -315,7 +317,7 @@ public class UserAgent {
         buf.append(method);
         return buf.toString();
     }
-    
+
     public boolean isRegistered() {
         return uac.getInitialRequestManager().getRegisterHandler()
             .isRegistered();
@@ -332,7 +334,7 @@ public class UserAgent {
     public DialogManager getDialogManager() {
         return dialogManager;
     }
-    
+
     public int getSipPort() {
         return transportManager.getSipPort();
     }

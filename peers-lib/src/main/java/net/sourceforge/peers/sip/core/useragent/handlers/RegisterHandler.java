@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007-2013 Yohann Martineau 
+
+    Copyright 2007-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent.handlers;
@@ -60,11 +60,11 @@ public class RegisterHandler extends MethodHandler
     private String requestUriStr;
     private String profileUriStr;
     private String callIDStr;
-    
+
     //FIXME should be on a profile based context
     private boolean unregisterInvoked;
     private boolean registered;
-    
+
     public RegisterHandler(UserAgent userAgent,
             TransactionManager transactionManager,
             TransportManager transportManager, Logger logger) {
@@ -89,7 +89,7 @@ public class RegisterHandler extends MethodHandler
         if (params != null) {
             String reqUriTransport = params.get(RFC3261.PARAM_TRANSPORT);
             if (reqUriTransport != null) {
-                transport = reqUriTransport; 
+                transport = reqUriTransport;
             }
         }
         SipURI sipUri = userAgent.getConfig().getOutboundProxy();
@@ -134,7 +134,7 @@ public class RegisterHandler extends MethodHandler
     //////////////////////////////////////////////////////////
     // ClientTransactionUser methods
     //////////////////////////////////////////////////////////
-    
+
     public void errResponseReceived(SipResponse sipResponse) {
         String password = userAgent.getConfig().getPassword();
         if (password != null &&  !"".equals(password.trim())) {
@@ -197,7 +197,7 @@ public class RegisterHandler extends MethodHandler
                     notifyListener(sipResponse);
                 }
             }
-        } else { // no password configured 
+        } else { // no password configured
             notifyListener(sipResponse);
         }
     }
@@ -205,7 +205,7 @@ public class RegisterHandler extends MethodHandler
     private void notifyListener(SipResponse sipResponse) {
         SipListener sipListener = userAgent.getSipListener();
         if (sipListener != null) {
-            sipListener.registerFailed(sipResponse);
+            sipListener.onRegisterFailed(sipResponse);
         }
         challenged = false;
     }
@@ -256,14 +256,14 @@ public class RegisterHandler extends MethodHandler
         }
         SipListener sipListener = userAgent.getSipListener();
         if (sipListener != null) {
-            sipListener.registerSuccessful(sipResponse);
+            sipListener.onRegisterSuccessful(sipResponse);
         }
     }
 
     public void transactionTimeout(ClientTransaction clientTransaction) {
         SipListener sipListener = userAgent.getSipListener();
         if (sipListener != null) {
-            sipListener.registerFailed(null);
+            sipListener.onRegisterFailed(null);
         }
     }
 
@@ -274,7 +274,7 @@ public class RegisterHandler extends MethodHandler
     public boolean isRegistered() {
         return registered;
     }
-    
+
     //////////////////////////////////////////////////////////
     // TimerTask
     //////////////////////////////////////////////////////////
@@ -286,7 +286,7 @@ public class RegisterHandler extends MethodHandler
                 initialRequestManager.createInitialRequest(requestUriStr,
                         RFC3261.METHOD_REGISTER, profileUriStr, callIDStr);
             } catch (SipUriSyntaxException e) {
-                logger.error("syntax error", e);
+                logger.error("syntax onError", e);
             }
         }
     }

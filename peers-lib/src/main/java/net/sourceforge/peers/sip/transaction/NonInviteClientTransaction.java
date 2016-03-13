@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.transaction;
@@ -44,17 +44,17 @@ public class NonInviteClientTransaction extends NonInviteTransaction
     public final NonInviteClientTransactionState PROCEEDING;
     public final NonInviteClientTransactionState COMPLETED;
     public final NonInviteClientTransactionState TERMINATED;
-    
+
     protected ClientTransactionUser transactionUser;
     protected String transport;
     protected int nbRetrans;
-    
+
     private NonInviteClientTransactionState state;
     //private SipClientTransport sipClientTransport;
     private MessageSender messageSender;
     private int remotePort;
     private InetAddress remoteInetAddress;
-    
+
     NonInviteClientTransaction(String branchId, InetAddress inetAddress,
             int port, String transport, SipRequest sipRequest,
             ClientTransactionUser transactionUser, Timer timer,
@@ -62,15 +62,15 @@ public class NonInviteClientTransaction extends NonInviteTransaction
             TransactionManager transactionManager, Logger logger) {
         super(branchId, sipRequest.getMethod(), timer, transportManager,
                 transactionManager, logger);
-        
+
         this.transport = transport;
-        
+
         SipHeaderFieldValue via = new SipHeaderFieldValue("");
         via.addParam(new SipHeaderParamName(RFC3261.PARAM_BRANCH), branchId);
         sipRequest.getSipHeaders().add(new SipHeaderFieldName(RFC3261.HDR_VIA), via, 0);
-        
+
         nbRetrans = 0;
-        
+
         INIT = new NonInviteClientTransactionStateInit(getId(), this, logger);
         state = INIT;
         TRYING = new NonInviteClientTransactionStateTrying(getId(), this,
@@ -81,23 +81,23 @@ public class NonInviteClientTransaction extends NonInviteTransaction
                 this, logger);
         TERMINATED = new NonInviteClientTransactionStateTerminated(getId(),
                 this, logger);
-        
+
         request = sipRequest;
         this.transactionUser = transactionUser;
-        
+
         remotePort = port;
         remoteInetAddress = inetAddress;
-        
+
         try {
             messageSender = transportManager.createClientTransport(
                     request, remoteInetAddress, remotePort, transport);
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
             transportError();
         }
         //TODO send request
     }
-    
+
     public void setState(NonInviteClientTransactionState state) {
         this.state.log(state);
         this.state = state;
@@ -105,9 +105,9 @@ public class NonInviteClientTransaction extends NonInviteTransaction
 
     public void start() {
         state.start();
-        
+
         //17.1.2.2
-        
+
 //        try {
 //            sipClientTransport = SipTransportFactory.getInstance()
 //                    .createClientTransport(this, request, remoteInetAddress,
@@ -120,33 +120,33 @@ public class NonInviteClientTransaction extends NonInviteTransaction
         try {
             messageSender.sendMessage(request);
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
             transportError();
         }
-        
+
         if (RFC3261.TRANSPORT_UDP.equals(transport)) {
             //start timer E with value T1 for retransmission
             timer.schedule(new TimerE(), RFC3261.TIMER_T1);
         }
-    
+
         timer.schedule(new TimerF(), 64 * RFC3261.TIMER_T1);
     }
-    
+
     void sendRetrans(long delay) {
         //sipClientTransport.send(request);
         try {
             messageSender.sendMessage(request);
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
             transportError();
         }
         timer.schedule(new TimerE(), delay);
     }
-    
+
     public void transportError() {
         state.transportError();
     }
-    
+
     public synchronized void receivedResponse(SipResponse sipResponse) {
         responses.add(sipResponse);
         // 17.1.1
@@ -161,31 +161,31 @@ public class NonInviteClientTransaction extends NonInviteTransaction
             logger.error("invalid response code");
         }
     }
-    
+
     public void requestTransportError(SipRequest sipRequest, Exception e) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void responseTransportError(Exception e) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     class TimerE extends TimerTask {
         @Override
         public void run() {
             state.timerEFires();
         }
     }
-    
+
     class TimerF extends TimerTask {
         @Override
         public void run() {
             state.timerFFires();
         }
     }
-    
+
     class TimerK extends TimerTask {
         @Override
         public void run() {

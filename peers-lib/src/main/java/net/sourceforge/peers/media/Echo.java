@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2009, 2010, 2012 Yohann Martineau 
+
+    Copyright 2009, 2010, 2012 Yohann Martineau
 */
 
 package net.sourceforge.peers.media;
@@ -66,7 +66,7 @@ public class Echo implements Runnable {
                 datagramSocket.send(datagramPacket);
             }
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
         } finally {
             datagramSocket.close();
         }

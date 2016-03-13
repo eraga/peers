@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007-2013 Yohann Martineau 
+
+    Copyright 2007-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent;
@@ -43,20 +43,20 @@ import net.sourceforge.peers.sip.transport.SipResponse;
 import net.sourceforge.peers.sip.transport.TransportManager;
 
 public class UAC {
-    
+
     private InitialRequestManager initialRequestManager;
     private MidDialogRequestManager midDialogRequestManager;
 
     private String registerCallID;
     private String profileUri;
-    
+
     //FIXME
     private UserAgent userAgent;
     private TransactionManager transactionManager;
     private DialogManager dialogManager;
     private List<String> guiClosedCallIds;
     private Logger logger;
-    
+
     /**
      * should be instanciated only once, it was a singleton.
      */
@@ -80,7 +80,7 @@ public class UAC {
 
     /**
      * For the moment we consider that only one profile uri is used at a time.
-     * @throws SipUriSyntaxException 
+     * @throws SipUriSyntaxException
      */
     SipRequest register() throws SipUriSyntaxException {
         String domain = userAgent.getDomain();
@@ -95,17 +95,17 @@ public class UAC {
                 requestUri, RFC3261.METHOD_REGISTER, profileUri,
                 registerCallID);
         if (sipListener != null) {
-            sipListener.registering(sipRequest);
+            sipListener.onRegistering(sipRequest);
         }
         return sipRequest;
     }
-    
+
     void unregister() throws SipUriSyntaxException {
         if (getInitialRequestManager().getRegisterHandler().isRegistered()) {
             String requestUri = RFC3261.SIP_SCHEME + RFC3261.SCHEME_SEPARATOR
                 + userAgent.getDomain();
             MessageInterceptor messageInterceptor = new MessageInterceptor() {
-                
+
                 @Override
                 public void postProcess(SipMessage sipMessage) {
                     initialRequestManager.registerHandler.unregister();
@@ -115,7 +115,7 @@ public class UAC {
                     contact.addParam(new SipHeaderParamName(RFC3261.PARAM_EXPIRES),
                             "0");
                 }
-                
+
             };
             // for any reason, asterisk requires a new Call-ID to unregister
             registerCallID = Utils.generateCallID(
@@ -125,12 +125,12 @@ public class UAC {
                     messageInterceptor);
         }
     }
-    
+
     SipRequest invite(String requestUri, String callId)
             throws SipUriSyntaxException {
         return initialRequestManager.createInitialRequest(requestUri,
                 RFC3261.METHOD_INVITE, profileUri, callId);
-        
+
     }
 
     private SipRequest getInviteWithAuth(String callId) {

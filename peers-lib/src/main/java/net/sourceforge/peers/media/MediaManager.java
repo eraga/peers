@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010-2013 Yohann Martineau 
+
+    Copyright 2010-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.media;
@@ -60,10 +60,10 @@ public class MediaManager {
             logger.error("unknown host: " + localAddress, e);
             return;
         }
-        
+
         rtpSession = new RtpSession(inetAddress, datagramSocket,
                 userAgent.isMediaDebug(), logger, userAgent.getPeersHome());
-        
+
         try {
             inetAddress = InetAddress.getByName(remoteAddress);
             rtpSession.setRemoteAddress(inetAddress);
@@ -71,21 +71,21 @@ public class MediaManager {
             logger.error("unknown host: " + remoteAddress, e);
         }
         rtpSession.setRemotePort(remotePort);
-        
-        
+
+
         try {
             captureRtpSender = new CaptureRtpSender(rtpSession,
                     soundSource, userAgent.isMediaDebug(), codec, logger,
                     userAgent.getPeersHome());
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
             return;
         }
 
         try {
             captureRtpSender.start();
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
         }
     }
 
@@ -97,15 +97,16 @@ public class MediaManager {
             soundManager.init();
             startRtpSessionOnSuccessResponse(localAddress, remoteAddress,
                     remotePort, codec, soundManager);
-            
+
             try {
                 incomingRtpReader = new IncomingRtpReader(
                         captureRtpSender.getRtpSession(), soundManager, codec,
-                        logger);
+                        logger,userAgent);
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
+
 
             incomingRtpReader.start();
             break;
@@ -132,9 +133,9 @@ public class MediaManager {
             try {
                 incomingRtpReader = new IncomingRtpReader(
                         captureRtpSender.getRtpSession(), null, codec,
-                        logger);
+                        logger, userAgent);
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
 
@@ -159,19 +160,19 @@ public class MediaManager {
             logger.error("unknown host: " + destAddress, e);
         }
         rtpSession.setRemotePort(destPort);
-        
+
         try {
             captureRtpSender = new CaptureRtpSender(rtpSession,
                     soundSource, userAgent.isMediaDebug(), codec, logger,
                     userAgent.getPeersHome());
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
             return;
         }
         try {
             captureRtpSender.start();
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
         }
 
     }
@@ -188,9 +189,9 @@ public class MediaManager {
             try {
                 //FIXME RTP sessions can be different !
                 incomingRtpReader = new IncomingRtpReader(rtpSession,
-                        soundManager, codec, logger);
+                        soundManager, codec, logger, userAgent);
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
 
@@ -220,9 +221,9 @@ public class MediaManager {
             startRtpSession(destAddress, destPort, codec, fileReader);
             try {
                 incomingRtpReader = new IncomingRtpReader(rtpSession,
-                        null, codec, logger);
+                        null, codec, logger, userAgent);
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
             incomingRtpReader.start();
@@ -262,7 +263,7 @@ public class MediaManager {
         }
 
     }
-    
+
     public void sendDtmf(char digit) {
         if (captureRtpSender != null) {
             List<RtpPacket> rtpPackets = dtmfFactory.createDtmfPackets(digit);

@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2008, 2009, 2010, 2011 Yohann Martineau 
+
+    Copyright 2008, 2009, 2010, 2011 Yohann Martineau
 */
 
 package net.sourceforge.peers.media;
@@ -49,7 +49,7 @@ public class RtpSender implements Runnable {
     private Logger logger;
     private String peersHome;
     private CountDownLatch latch;
-    
+
     public RtpSender(PipedInputStream encodedData, RtpSession rtpSession,
             boolean mediaDebug, Codec codec, Logger logger, String peersHome,
             CountDownLatch latch) {
@@ -100,7 +100,7 @@ public class RtpSender implements Runnable {
         long lastSentTime = System.nanoTime();
         // indicate if its the first time that we send a packet (dont wait)
         boolean firstTime = true;
-        
+
         while (!isStopped) {
             numBytesRead = 0;
             try {
@@ -111,7 +111,7 @@ public class RtpSender implements Runnable {
                     numBytesRead += tempBytesRead;
                 }
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
                 return;
             }
             byte[] trimmedBuffer;
@@ -142,7 +142,7 @@ public class RtpSender implements Runnable {
                 }
                 rtpPacket.setData(trimmedBuffer);
             }
-            
+
             rtpPacket.setSequenceNumber(sequenceNumber++);
             timestamp += buf_size;
             rtpPacket.setTimestamp(timestamp);

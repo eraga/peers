@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.transport;
@@ -41,10 +41,10 @@ public abstract class MessageReceiver implements Runnable {
 
     public static final int BUFFER_SIZE = 2048;//FIXME should correspond to MTU 1024;
     public static final String CHARACTER_ENCODING = "US-ASCII";
-    
+
     protected int port;
     private boolean isListening;
-    
+
     //private UAS uas;
     private SipServerTransportUser sipServerTransportUser;
     private TransactionManager transactionManager;
@@ -62,19 +62,19 @@ public abstract class MessageReceiver implements Runnable {
         this.logger = logger;
         isListening = true;
     }
-    
+
     public void run() {
         while (isListening) {
             try {
                 listen();
             } catch (IOException e) {
-                logger.error("input/output error", e);
+                logger.error("input/output onError", e);
             }
         }
     }
 
     protected abstract void listen() throws IOException;
-    
+
     protected boolean isRequest(byte[] message) {
         String beginning = null;
         try {
@@ -88,7 +88,7 @@ public abstract class MessageReceiver implements Runnable {
         }
         return true;
     }
-    
+
     protected void processMessage(byte[] message, InetAddress sourceIp,
             int sourcePort, String transport) throws IOException {
         ByteArrayInputStream byteArrayInputStream =
@@ -125,9 +125,9 @@ public abstract class MessageReceiver implements Runnable {
             sipMessage = transportManager.sipParser.parse(
                     new ByteArrayInputStream(message));
         } catch (IOException e) {
-            logger.error("input/output error", e);
+            logger.error("input/output onError", e);
         } catch (SipParserException e) {
-            logger.error("SIP parser error", e);
+            logger.error("SIP parser onError", e);
         }
         if (sipMessage == null) {
             return;
@@ -137,8 +137,8 @@ public abstract class MessageReceiver implements Runnable {
 
         if (sipMessage instanceof SipRequest) {
             SipRequest sipRequest = (SipRequest)sipMessage;
-            
-            
+
+
             SipHeaderFieldValue topVia = Utils.getTopVia(sipRequest);
             String sentBy =
                 topVia.getParam(new SipHeaderParamName(RFC3261.PARAM_SENTBY));
@@ -163,7 +163,7 @@ public abstract class MessageReceiver implements Runnable {
                 topVia.removeParam(rportName);
                 topVia.addParam(rportName, String.valueOf(sourcePort));
             }
-            
+
             ServerTransaction serverTransaction =
                 transactionManager.getServerTransaction(sipRequest);
             if (serverTransaction == null) {
@@ -185,7 +185,7 @@ public abstract class MessageReceiver implements Runnable {
             }
         }
     }
-    
+
     public synchronized void setListening(boolean isListening) {
         this.isListening = isListening;
     }
@@ -202,5 +202,5 @@ public abstract class MessageReceiver implements Runnable {
 //    public void setUas(UAS uas) {
 //        this.uas = uas;
 //    }
-    
+
 }

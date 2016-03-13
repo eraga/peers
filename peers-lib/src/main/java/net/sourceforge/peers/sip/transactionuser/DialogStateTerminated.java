@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007-2013 Yohann Martineau 
+
+    Copyright 2007-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.transactionuser;
@@ -32,23 +32,23 @@ public class DialogStateTerminated extends DialogState {
         logger.error(id + " invalid transition");
         throw new IllegalStateException();
     }
-    
+
     @Override
     public void receivedOrSent2xx() {
         logger.error(id + " invalid transition");
         throw new IllegalStateException();
     }
-    
+
     @Override
     public void receivedOrSent300To699() {
         logger.error(id + " invalid transition");
         throw new IllegalStateException();
     }
-    
+
     @Override
     public void receivedOrSentBye() {
         //ignore bye retransmissions
-//        logger.error(id + " invalid transition");
+//        logger.onError(id + " invalid transition");
 //        throw new IllegalStateException();
     }
 }

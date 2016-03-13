@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2007, 2008, 2009, 2010 Yohann Martineau 
+
+    Copyright 2007, 2008, 2009, 2010 Yohann Martineau
 */
 
 package net.sourceforge.peers.media;
@@ -27,19 +27,24 @@ import net.sourceforge.peers.rtp.RtpListener;
 import net.sourceforge.peers.rtp.RtpPacket;
 import net.sourceforge.peers.rtp.RtpSession;
 import net.sourceforge.peers.sdp.Codec;
+import net.sourceforge.peers.sip.core.useragent.UserAgent;
 
 public class IncomingRtpReader implements RtpListener {
 
+    private final Codec codec;
     private RtpSession rtpSession;
     private AbstractSoundManager soundManager;
     private Decoder decoder;
+    private UserAgent userAgent;
 
     public IncomingRtpReader(RtpSession rtpSession,
-            AbstractSoundManager soundManager, Codec codec, Logger logger)
+            AbstractSoundManager soundManager, Codec codec, Logger logger, UserAgent userAgent)
             throws IOException {
         logger.debug("playback codec:" + codec.toString().trim());
         this.rtpSession = rtpSession;
         this.soundManager = soundManager;
+        this.userAgent = userAgent;
+        this.codec = codec;
         switch (codec.getPayloadType()) {
         case RFC3551.PAYLOAD_TYPE_PCMU:
             decoder = new PcmuDecoder();
@@ -51,10 +56,12 @@ public class IncomingRtpReader implements RtpListener {
             throw new RuntimeException("unsupported payload type");
         }
         rtpSession.addRtpListener(this);
+
     }
-    
+
     public void start() {
         rtpSession.start();
+        userAgent.getSipListener().onMediaSessionStarted(userAgent, codec);
     }
 
     @Override
@@ -63,6 +70,11 @@ public class IncomingRtpReader implements RtpListener {
         if (soundManager != null) {
             soundManager.writeData(rawBuf, 0, rawBuf.length);
         }
+    }
+
+    @Override
+    public void onRtpSessionEnd() {
+        userAgent.getSipListener().onMediaSessionStopped(userAgent);
     }
 
 }
