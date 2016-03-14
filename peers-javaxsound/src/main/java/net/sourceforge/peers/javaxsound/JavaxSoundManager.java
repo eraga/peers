@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010, 2011, 2012 Yohann Martineau 
+
+    Copyright 2010, 2011, 2012 Yohann Martineau
 */
 
 package net.sourceforge.peers.javaxsound;
@@ -52,7 +52,7 @@ public class JavaxSoundManager extends AbstractSoundManager {
     private boolean mediaDebug;
     private Logger logger;
     private String peersHome;
-    
+
     public JavaxSoundManager(boolean mediaDebug, Logger logger, String peersHome) {
         this.mediaDebug = mediaDebug;
         this.logger = logger;
@@ -97,7 +97,6 @@ public class JavaxSoundManager extends AbstractSoundManager {
         AccessController.doPrivileged(
             new PrivilegedAction<Void>() {
 
-                @Override
                 public Void run() {
                     try {
                         targetDataLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
@@ -151,7 +150,6 @@ public class JavaxSoundManager extends AbstractSoundManager {
         // AccessController.doPrivileged added for plugin compatibility
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
 
-            @Override
             public Void run() {
                 if (targetDataLine != null) {
                     targetDataLine.close();
@@ -170,7 +168,6 @@ public class JavaxSoundManager extends AbstractSoundManager {
         });
     }
 
-    @Override
     public synchronized byte[] readData() {
         if (targetDataLine == null) {
             return null;

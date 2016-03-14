@@ -6,6 +6,7 @@ import net.sourceforge.peers.Config;
 import net.sourceforge.peers.FileLogger;
 import net.sourceforge.peers.Logger;
 import net.sourceforge.peers.javaxsound.JavaxSoundManager;
+import net.sourceforge.peers.sdp.Codec;
 import net.sourceforge.peers.sip.core.useragent.SipListener;
 import net.sourceforge.peers.sip.core.useragent.UserAgent;
 import net.sourceforge.peers.sip.syntaxencoding.SipUriSyntaxException;
@@ -17,7 +18,7 @@ public class EventManager implements SipListener {
     private UserAgent userAgent;
     private SipRequest sipRequest;
     private CommandsReader commandsReader;
-    
+
     public EventManager() throws SocketException {
         Config config = new CustomConfig();
         Logger logger = new FileLogger(null);
@@ -35,8 +36,8 @@ public class EventManager implements SipListener {
         commandsReader = new CommandsReader(this);
         commandsReader.start();
     }
-    
-    
+
+
     // commands methods
     public void call(final String callee) {
         new Thread() {
@@ -50,7 +51,7 @@ public class EventManager implements SipListener {
             }
         }.start();
     }
-    
+
     public void hangup() {
         new Thread() {
             @Override
@@ -59,33 +60,7 @@ public class EventManager implements SipListener {
             }
         }.start();
     }
-    
-    
-    // SipListener methods
-    
-    @Override
-    public void registering(SipRequest sipRequest) { }
 
-    @Override
-    public void registerSuccessful(SipResponse sipResponse) { }
-
-    @Override
-    public void registerFailed(SipResponse sipResponse) { }
-
-    @Override
-    public void incomingCall(SipRequest sipRequest, SipResponse provResponse) { }
-
-    @Override
-    public void remoteHangup(SipRequest sipRequest) { }
-
-    @Override
-    public void ringing(SipResponse sipResponse) { }
-
-    @Override
-    public void calleePickup(SipResponse sipResponse) { }
-
-    @Override
-    public void error(SipResponse sipResponse) { }
 
     public static void main(String[] args) {
         try {
@@ -93,5 +68,45 @@ public class EventManager implements SipListener {
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    public void onRegistering(SipRequest sipRequest) {
+
+    }
+
+    public void onRegisterSuccessful(SipResponse sipResponse) {
+
+    }
+
+    public void onRegisterFailed(SipResponse sipResponse) {
+
+    }
+
+    public void onIncomingCall(SipRequest sipRequest, SipResponse provResponse) {
+
+    }
+
+    public void onRemoteHangup(SipRequest sipRequest) {
+
+    }
+
+    public void onRinging(SipResponse sipResponse) {
+
+    }
+
+    public void onCalleePickup(SipResponse sipResponse) {
+
+    }
+
+    public void onError(SipResponse sipResponse) {
+
+    }
+
+    public void onMediaSessionStarted(UserAgent ua, Codec codec) {
+
+    }
+
+    public void onMediaSessionStopped(UserAgent ua) {
+
     }
 }

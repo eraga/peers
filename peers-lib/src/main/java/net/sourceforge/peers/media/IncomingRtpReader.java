@@ -37,6 +37,8 @@ public class IncomingRtpReader implements RtpListener {
     private Decoder decoder;
     private UserAgent userAgent;
 
+    private boolean gotFirstPacket = false;
+
     public IncomingRtpReader(RtpSession rtpSession,
             AbstractSoundManager soundManager, Codec codec, Logger logger, UserAgent userAgent)
             throws IOException {
@@ -61,7 +63,6 @@ public class IncomingRtpReader implements RtpListener {
 
     public void start() {
         rtpSession.start();
-        userAgent.getSipListener().onMediaSessionStarted(userAgent, codec);
     }
 
     @Override
@@ -69,6 +70,10 @@ public class IncomingRtpReader implements RtpListener {
         byte[] rawBuf = decoder.process(rtpPacket.getData());
         if (soundManager != null) {
             soundManager.writeData(rawBuf, 0, rawBuf.length);
+            if(!gotFirstPacket) {
+                gotFirstPacket = true;
+                userAgent.getSipListener().onMediaSessionStarted(userAgent, codec);
+            }
         }
     }
 

@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010, 2012 Yohann Martineau 
+
+    Copyright 2010, 2012 Yohann Martineau
 */
 
 package net.sourceforge.peers.sip.core.useragent;
@@ -27,10 +27,10 @@ import net.sourceforge.peers.Config;
 import net.sourceforge.peers.JavaConfig;
 import net.sourceforge.peers.media.AbstractSoundManager;
 import net.sourceforge.peers.media.MediaMode;
+import net.sourceforge.peers.sdp.Codec;
 import net.sourceforge.peers.sip.syntaxencoding.SipUriSyntaxException;
 import net.sourceforge.peers.sip.transport.SipRequest;
 import net.sourceforge.peers.sip.transport.SipResponse;
-
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -99,33 +99,54 @@ public class CancelTestNG {
         }
 
         @Override
-        public void calleePickup(SipResponse sipResponse) { }
+        public void onRegistering(SipRequest sipRequest) {
 
-        @Override
-        public void error(SipResponse sipResponse) {
-            invite487Received = true;
         }
 
         @Override
-        public void incomingCall(SipRequest sipRequest, SipResponse provResponse) {
+        public void onRegisterSuccessful(SipResponse sipResponse) {
+
+        }
+
+        @Override
+        public void onRegisterFailed(SipResponse sipResponse) {
+
+        }
+
+        @Override
+        public void onIncomingCall(SipRequest sipRequest, SipResponse provResponse) {
             incomingCallInvoked = true;
         }
 
         @Override
-        public void registerFailed(SipResponse sipResponse) { }
+        public void onRemoteHangup(SipRequest sipRequest) {
+
+        }
 
         @Override
-        public void registerSuccessful(SipResponse sipResponse) { }
+        public void onRinging(SipResponse sipResponse) {
+
+        }
 
         @Override
-        public void registering(SipRequest sipRequest) { }
+        public void onCalleePickup(SipResponse sipResponse) {
+
+        }
 
         @Override
-        public void remoteHangup(SipRequest sipRequest) { }
+        public void onError(SipResponse sipResponse) {
+            invite487Received = true;
+        }
 
         @Override
-        public void ringing(SipResponse sipResponse) { }
-        
+        public void onMediaSessionStarted(UserAgent ua, Codec codec) {
+
+        }
+
+        @Override
+        public void onMediaSessionStopped(UserAgent ua) {
+
+        }
     }
 
 }

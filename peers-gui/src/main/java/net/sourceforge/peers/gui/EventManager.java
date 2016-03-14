@@ -13,8 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Copyright 2010-2013 Yohann Martineau 
+
+    Copyright 2010-2013 Yohann Martineau
 */
 
 package net.sourceforge.peers.gui;
@@ -36,6 +36,7 @@ import net.sourceforge.peers.Config;
 import net.sourceforge.peers.Logger;
 import net.sourceforge.peers.media.AbstractSoundManager;
 import net.sourceforge.peers.media.MediaManager;
+import net.sourceforge.peers.sdp.Codec;
 import net.sourceforge.peers.sip.RFC3261;
 import net.sourceforge.peers.sip.Utils;
 import net.sourceforge.peers.sip.core.useragent.SipListener;
@@ -99,7 +100,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void registering(final SipRequest sipRequest) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 if (accountFrame != null) {
@@ -114,7 +115,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void registerFailed(final SipResponse sipResponse) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 //mainFrame.setLabelText("Registration failed");
@@ -130,7 +131,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void registerSuccessful(final SipResponse sipResponse) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 if (closed) {
@@ -150,7 +151,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void calleePickup(final SipResponse sipResponse) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 CallFrame callFrame = getCallFrame(sipResponse);
@@ -165,7 +166,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void error(final SipResponse sipResponse) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 CallFrame callFrame = getCallFrame(sipResponse);
@@ -181,7 +182,7 @@ public class EventManager implements SipListener, MainFrameListener,
     public void incomingCall(final SipRequest sipRequest,
             SipResponse provResponse) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 SipHeaders sipHeaders = sipRequest.getSipHeaders();
@@ -203,7 +204,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void remoteHangup(final SipRequest sipRequest) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 CallFrame callFrame = getCallFrame(sipRequest);
@@ -218,7 +219,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void ringing(final SipResponse sipResponse) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 CallFrame callFrame = getCallFrame(sipResponse);
@@ -240,7 +241,7 @@ public class EventManager implements SipListener, MainFrameListener,
             return;
         }
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 Config config = userAgent.getConfig();
@@ -259,7 +260,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void callClicked(final String uri) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 String callId = Utils.generateCallID(
@@ -285,7 +286,7 @@ public class EventManager implements SipListener, MainFrameListener,
     @Override
     public void windowClosed() {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 try {
@@ -304,11 +305,11 @@ public class EventManager implements SipListener, MainFrameListener,
     }
 
     // call frame events
-    
+
     @Override
     public void hangupClicked(final SipRequest sipRequest) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 userAgent.terminate(sipRequest);
@@ -328,11 +329,11 @@ public class EventManager implements SipListener, MainFrameListener,
             }
         });
     }
-    
+
     @Override
     public void busyHereClicked(final SipRequest sipRequest) {
         SwingUtilities.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 userAgent.rejectCall(sipRequest);
@@ -340,7 +341,7 @@ public class EventManager implements SipListener, MainFrameListener,
         });
 
     }
-    
+
     @Override
     public void dtmf(final char digit) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -417,4 +418,43 @@ public class EventManager implements SipListener, MainFrameListener,
         }
     }
 
+    public void onRegistering(SipRequest sipRequest) {
+
+    }
+
+    public void onRegisterSuccessful(SipResponse sipResponse) {
+
+    }
+
+    public void onRegisterFailed(SipResponse sipResponse) {
+
+    }
+
+    public void onIncomingCall(SipRequest sipRequest, SipResponse provResponse) {
+
+    }
+
+    public void onRemoteHangup(SipRequest sipRequest) {
+
+    }
+
+    public void onRinging(SipResponse sipResponse) {
+
+    }
+
+    public void onCalleePickup(SipResponse sipResponse) {
+
+    }
+
+    public void onError(SipResponse sipResponse) {
+
+    }
+
+    public void onMediaSessionStarted(UserAgent ua, Codec codec) {
+
+    }
+
+    public void onMediaSessionStopped(UserAgent ua) {
+
+    }
 }
