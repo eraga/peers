@@ -5,6 +5,6 @@ target/
 peers-demo/src/main/java/net/sourceforge/peers/demo/MyConfig.java
 \#*#
 bin/
+*.iml
 .idea/
 .DS_Store
-*.iml
